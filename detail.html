@@ -15,12 +15,21 @@
 
     <div class="container bg-red-500 p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mx-auto" id="display-container">
     <!-- card display -->
+     
 </div>
 
 </body>
 <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
 
 <script>
+
+    // create function to get data or product by id 
+    function getProductById(){
+        let param = new URLSearchParams(window.location.search);
+        return param.get('productId');
+    }
+
+    // console.log('id', getProductById());
 
     // generate rating star function 
     function ratingStar(rating){
@@ -44,40 +53,41 @@
         }
         return stars;
     }
-
     // fetching data function
-     let dataFetching = async () => {
-        const data = await fetch('https://dummyjson.com/products');
-        const response = await data.json();
-        let renderData = response.products;
-
-        let card = renderData.map(data => `
+       async function dataFetching(){
+        let id = getProductById();
+        const data = await fetch(`https://dummyjson.com/products/${id}`);
+        let response = await data.json();
+        console.log(response)
+       
+        // console.log('response data : ', response);
+        // let renderData = response.products;
+        // console.log('render data : ', renderData);
+        document.getElementById('display-container').innerHTML =
+         `
             <div class="w-full bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 flex flex-col">
-                <a href="detail.html?productId=${data?.id}">
-                    <img class="p-8 rounded-t-lg w-full h-full object-contain bg-white" src="${data.images[0]}" alt="product image" />
+                <a href="#">
+                    <img class="p-8 rounded-t-lg w-full h-full object-contain bg-white" src="${response.images[0]}" alt="product image" />
                 </a>
                 <div class="px-5 pb-5 flex flex-col flex-1">
                     <a href="#">
-                        <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white mb-2">${data.title}</h5>
+                        <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white mb-2">${response.title}</h5>
                     </a>
-                    <p class="text-gray-700 dark:text-gray-300 text-sm mb-2 flex-1">${data.description}</p>
+                    <p class="text-gray-700 dark:text-gray-300 text-sm mb-2 flex-1">${response.description}</p>
                     <div class="flex items-center mt-2.5 mb-5">
                         <div class="flex items-center space-x-1 rtl:space-x-reverse" >
-                        ${ratingStar(data.rating)}
+                        ${ratingStar(response.rating)}
                         </div>
-                        <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-sm dark:bg-blue-200 dark:text-blue-800 ms-3">${data.rating}</span>
+                        <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-sm dark:bg-blue-200 dark:text-blue-800 ms-3">${response.rating}</span>
                     </div>
                     <div class="flex items-center justify-between mt-auto">
-                        <span class="text-3xl font-bold text-gray-900 dark:text-white">$${data.price}</span>
+                        <span class="text-3xl font-bold text-gray-900 dark:text-white">$${response.price}</span>
                         <a href="#" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Add to cart</a>
                     </div>
                 </div>
             </div>
-        `).join('');
-
-        document.getElementById('display-container').innerHTML = card;
+        `;
      }
-
     dataFetching();
 
 </script>
